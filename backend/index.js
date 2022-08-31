@@ -5,8 +5,8 @@ const app = express();
 import notFoundMiddleware from "./middleware/not-found.js"
 import errorHandlerMiddleware from './middleware/error-handler.js';
 
-app.get('/', (req, res) => {
-  res.send('Welcome!')
+app.get('/appointments', (req, res) => {
+  res.send({name: "george"})
 })
 
 //Take in all http methods & routes left over after checking routes

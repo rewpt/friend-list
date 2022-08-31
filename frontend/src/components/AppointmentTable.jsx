@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 const axios = require('axios');
 
 const URL = '/appointments';
@@ -21,11 +21,11 @@ const AppointmentTable = () => {
 
   return (
     <div>
-      <tr>
+      <table>
         {appointments.map((appointment) => {
           return <td>{appointment.name}</td>;
         })}
-      </tr>
+      </table>
     </div>
   );
 };
