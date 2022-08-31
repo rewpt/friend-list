@@ -28,6 +28,7 @@ const AppointmentTable = () => {
             return (
               <tr key={appointment.id}>
                 <td>{appointment.name}</td>
+                <td>{appointment.date}</td>
               </tr>
             );
           })}
