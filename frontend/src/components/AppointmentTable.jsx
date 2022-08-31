@@ -10,7 +10,8 @@ const AppointmentTable = () => {
     const getAppointments = async () => {
       try {
         const updatedAppointments = await axios.get(URL);
-        setAppointments(updatedAppointments);
+        console.log(updatedAppointments);
+        setAppointments([...updatedAppointments.data]);
       } catch (err) {
         console.log(err);
       }
@@ -22,9 +23,15 @@ const AppointmentTable = () => {
   return (
     <div>
       <table>
-        {appointments.map((appointment) => {
-          return <td>{appointment.name}</td>;
-        })}
+        <tbody>
+          {appointments.map((appointment) => {
+            return (
+              <tr key={appointment.id}>
+                <td>{appointment.firstName}</td>
+              </tr>
+            );
+          })}
+        </tbody>
       </table>
     </div>
   );
