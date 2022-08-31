@@ -9,14 +9,14 @@ import errorHandlerMiddleware from './middleware/error-handler.js';
 app.use(cors())
 
 
-let appointments = [
-  {id: 1, name: "Doctors", date: "11/9/2022"},
-  {id: 2, name: "Dentist", date: "06/11/2022"},
-  {id: 3, name: "Optometrist", date: "23/12/2022"}
+let birthdays = [
+  {id: 1, name: "Jerry", date: new Date("1954-04-29")},
+  {id: 2, name: "George", date: new Date("1959-09-23")},
+  {id: 3, name: "Elaine", date: new Date("1961-01-03")}
 ];
 
-app.get('/appointments', (req, res) => {
-  res.send(appointments)
+app.get('/birthdays', (req, res) => {
+  res.send(birthdays)
 })
 
 //Take in all http methods & routes left over after checking routes

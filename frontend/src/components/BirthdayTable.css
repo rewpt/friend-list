@@ -1,0 +1,20 @@
+button {
+  cursor: pointer;
+  border-radius: 50%;
+  font-weight: bold;
+}
+
+h1 {
+  margin-bottom: 0px;
+}
+
+.add-birthday {
+  background: green;
+
+  margin: 1rem 0;
+}
+
+.remove-birthday {
+  background: pink;
+  font: bold;
+}

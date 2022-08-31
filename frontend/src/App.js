@@ -1,10 +1,10 @@
 import './App.css';
-import AppointmentTable from './components/AppointmentTable';
+import BirthdayTable from './components/BirthdayTable';
 
 function App() {
   return (
     <div className="App">
-      <AppointmentTable />
+      <BirthdayTable />
     </div>
   );
 }
