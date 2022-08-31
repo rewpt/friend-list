@@ -10,9 +10,9 @@ app.use(cors())
 
 
 let appointments = [
-  {id: 1, appointmentName: "Doctors", date: "11/9/2022"},
-  {id: 2, appointmentName: "Dentist", date: "06/11/2022"},
-  {id: 3, appointmentName: "Optometrist", date: "23/12/2022"}
+  {id: 1, name: "Doctors", date: "11/9/2022"},
+  {id: 2, name: "Dentist", date: "06/11/2022"},
+  {id: 3, name: "Optometrist", date: "23/12/2022"}
 ];
 
 app.get('/appointments', (req, res) => {

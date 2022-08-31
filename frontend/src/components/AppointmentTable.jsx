@@ -27,7 +27,7 @@ const AppointmentTable = () => {
           {appointments.map((appointment) => {
             return (
               <tr key={appointment.id}>
-                <td>{appointment.firstName}</td>
+                <td>{appointment.name}</td>
               </tr>
             );
           })}
