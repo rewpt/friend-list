@@ -1,7 +1,9 @@
 button {
   cursor: pointer;
-  border-radius: 50%;
+  border-radius: 20%;
   font-weight: bold;
+  height: 24px;
+  width: 30px;
 }
 
 h1 {
@@ -14,7 +16,16 @@ h1 {
   margin: 1rem 0;
 }
 
+.edit-birthday {
+  margin-left: 8px;
+  background-color: BurlyWood;
+}
+
 .remove-birthday {
   background: pink;
   font: bold;
+}
+
+.birthday-text {
+  margin-left: 16px;
 }

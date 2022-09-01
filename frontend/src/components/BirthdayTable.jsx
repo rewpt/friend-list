@@ -6,6 +6,8 @@ const URL = '/birthdays';
 
 const BirthdayTable = () => {
   const [birthdays, setBirthdays] = useState([]);
+  const [nameEntry, setNameEntry] = useState('');
+  const [birthdayEntry, setBirthdayEntry] = useState('');
 
   useEffect(() => {
     const getBirthdays = async () => {
@@ -23,9 +25,11 @@ const BirthdayTable = () => {
 
   const addBirthday = async () => {
     const updatedBirthdays = await axios.post('/birthdays', {
-      newBirthday: { name: 'Mike', date: '1980-02-01' },
+      newBirthday: { name: nameEntry, date: birthdayEntry },
     });
     setBirthdays([...updatedBirthdays.data]);
+    setNameEntry('');
+    setBirthdayEntry('');
   };
 
   const removeBirthday = async (birthdayId) => {
@@ -36,6 +40,17 @@ const BirthdayTable = () => {
   return (
     <div>
       <h1>Friend's Birthdays</h1>
+      <label>Name: </label>
+      <input
+        value={nameEntry}
+        onChange={(e) => setNameEntry(e.target.value)}
+      ></input>
+      <label className="birthday-text">Birthday (yyyy/mm/dd): </label>
+      <input
+        value={birthdayEntry}
+        maxLength="10"
+        onChange={(e) => setBirthdayEntry(e.target.value)}
+      ></input>
       <button onClick={addBirthday} className="add-birthday">
         +
       </button>
@@ -54,6 +69,14 @@ const BirthdayTable = () => {
                     className="remove-birthday"
                   >
                     -
+                  </button>
+                  <button
+                    onClick={() => {
+                      removeBirthday(appointment.id);
+                    }}
+                    className="edit-birthday"
+                  >
+                    ...
                   </button>
                 </td>
               </tr>
