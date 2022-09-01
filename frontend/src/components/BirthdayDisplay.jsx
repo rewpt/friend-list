@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useLayoutEffect } from 'react';
-import './BirthdayTable.css';
+import './BirthdayDisplay.css';
 import EditBox from './EditBox';
 const axios = require('axios');
 
@@ -17,7 +17,6 @@ const BirthdayTable = () => {
   const [sortBy, setSortBy] = useState('name');
 
   const sortEntries = (data) => {
-    console.log('sortentriesdata', data);
     if (sortBy === 'name') {
       return data.sort((a, b) => a.name.localeCompare(b.name));
     } else {
