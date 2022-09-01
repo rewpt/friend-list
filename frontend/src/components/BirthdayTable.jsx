@@ -37,6 +37,13 @@ const BirthdayTable = () => {
     setBirthdays([...updatedBirthdays.data]);
   };
 
+  const editBirthday = async (birthdayId, updatedEntry) => {
+    const updatedBirthdays = await axios.put(`/birthdays/${birthdayId}`, {
+      updatedEntry,
+    });
+    setBirthdays([...updatedBirthdays.data]);
+  };
+
   return (
     <div>
       <h1>Friend's Birthdays</h1>
