@@ -1,11 +1,10 @@
 import React, { useEffect, useState, useLayoutEffect } from 'react';
 import './BirthdayDisplay.css';
+import BirthdayTable from './BirthdayTable';
 import EditBox from './EditBox';
 const axios = require('axios');
 
-const URL = '/birthdays';
-
-const BirthdayTable = () => {
+const BirthdayDisplay = () => {
   const [birthdays, setBirthdays] = useState([]);
   const [editOpen, setEditOpen] = useState(false);
   const [currentlyEditing, setCurrentlyEditing] = useState('');
@@ -16,6 +15,7 @@ const BirthdayTable = () => {
   const [editId, setEditId] = useState(0);
   const [sortBy, setSortBy] = useState('name');
 
+  //generic sort by name otherwise sort by date for array of objects
   const sortEntries = (data) => {
     if (sortBy === 'name') {
       return data.sort((a, b) => a.name.localeCompare(b.name));
@@ -24,19 +24,67 @@ const BirthdayTable = () => {
     }
   };
 
+  // fetch birthdays on load => sort => set into state
   useEffect(() => {
     const getBirthdays = async () => {
       try {
-        const updatedBirthdays = await axios.get(URL);
+        const updatedBirthdays = await axios.get('/birthdays');
         const sortedBirthdays = await sortEntries(updatedBirthdays.data);
         setBirthdays([...sortedBirthdays]);
       } catch (err) {
-        console.log(err);
+        console.log('loaderror', err);
       }
     };
 
     getBirthdays();
+  }, []);
+
+  // another use Effect to avoid recalling api when select is changed
+  useEffect(() => {
+    setBirthdays((prev) => sortEntries([...prev]));
   }, [sortBy]);
+
+  //API calls
+
+  const addBirthday = async () => {
+    try {
+      const updatedBirthdays = await axios.post('/birthdays', {
+        newBirthday: { name: newNameEntry, date: newBirthdayEntry },
+      });
+      const sortedBirthdays = await sortEntries(updatedBirthdays.data);
+      setBirthdays([...sortedBirthdays]);
+      setNewNameEntry('');
+      setNewBirthdayEntry('');
+    } catch (err) {
+      console.log('addBirthday error: ', err);
+    }
+  };
+
+  const removeBirthday = async (birthdayId) => {
+    try {
+      const updatedBirthdays = await axios.delete(`/birthdays/${birthdayId}`);
+      const sortedBirthdays = await sortEntries(updatedBirthdays.data);
+      setBirthdays([...sortedBirthdays]);
+    } catch (err) {
+      console.log('removeBirthdays error:', err);
+    }
+  };
+
+  const editEntryOnClick = async (birthdayId) => {
+    try {
+      const updatedBirthdays = await axios.put(`/birthdays/${birthdayId}`, {
+        name: editNameEntry,
+        date: editBirthdayEntry,
+      });
+      const sortedBirthdays = await sortEntries(updatedBirthdays.data);
+      setBirthdays([...sortedBirthdays]);
+      closeEditBox();
+    } catch (err) {
+      console.log('editEntry Error: ', err);
+    }
+  };
+
+  //Pure Functions
 
   const closeEditBox = () => {
     setEditOpen(false);
@@ -54,30 +102,14 @@ const BirthdayTable = () => {
     setEditBirthdayEntry(e.target.value);
   };
 
-  const addBirthday = async () => {
-    const updatedBirthdays = await axios.post('/birthdays', {
-      newBirthday: { name: newNameEntry, date: newBirthdayEntry },
-    });
-    const sortedBirthdays = await sortEntries(updatedBirthdays.data);
-    setBirthdays([...sortedBirthdays]);
-    setNewNameEntry('');
-    setNewBirthdayEntry('');
-  };
-
-  const removeBirthday = async (birthdayId) => {
-    const updatedBirthdays = await axios.delete(`/birthdays/${birthdayId}`);
-    const sortedBirthdays = await sortEntries(updatedBirthdays.data);
-    setBirthdays([...sortedBirthdays]);
-  };
-
-  const editEntryOnClick = async (birthdayId) => {
-    const updatedBirthdays = await axios.put(`/birthdays/${birthdayId}`, {
-      name: editNameEntry,
-      date: editBirthdayEntry,
-    });
-    const sortedBirthdays = await sortEntries(updatedBirthdays.data);
-    setBirthdays([...sortedBirthdays]);
-    closeEditBox();
+  const openEditOnClick = (birthday) => {
+    setEditId(birthday.id);
+    setCurrentlyEditing(birthday.name);
+    setEditOpen(true);
+    setEditNameEntry(birthday.name);
+    setEditBirthdayEntry(
+      birthday.date.toString().replace(/-/g, '/').substring(0, 10)
+    );
   };
 
   return (
@@ -114,47 +146,13 @@ const BirthdayTable = () => {
         </select>
       </div>
       <div className={editOpen ? 'table-edit-container' : 'table-container'}>
-        <table>
-          <tbody>
-            {birthdays.map((birthday) => {
-              return (
-                <tr key={birthday.id}>
-                  <td>{birthday.name}</td>
-                  <td>{new Date(birthday.date).toDateString()}</td>
-                  <td>
-                    <button
-                      onClick={() => {
-                        removeBirthday(birthday.id);
-                        if (editOpen) closeEditBox();
-                      }}
-                      className="remove-birthday"
-                    >
-                      -
-                    </button>
-                    <button
-                      onClick={() => {
-                        setEditId(birthday.id);
-                        setCurrentlyEditing(birthday.name);
-                        setEditOpen(true);
-                        setEditNameEntry(birthday.name);
-                        setEditBirthdayEntry(
-                          birthday.date
-                            .toString()
-                            .replace(/-/g, '/')
-                            .substring(0, 10)
-                        );
-                      }}
-                      className="edit-birthday"
-                    >
-                      ...
-                    </button>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-
+        <BirthdayTable
+          birthdays={birthdays}
+          openEditOnClick={openEditOnClick}
+          editOpen={editOpen}
+          removeBirthday={removeBirthday}
+          closeEditBox={closeEditBox}
+        />
         {editOpen && (
           <EditBox
             currentlyEditing={currentlyEditing}
@@ -173,4 +171,4 @@ const BirthdayTable = () => {
   );
 };
 
-export default BirthdayTable;
+export default BirthdayDisplay;
