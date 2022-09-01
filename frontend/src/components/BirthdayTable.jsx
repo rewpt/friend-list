@@ -6,7 +6,6 @@ const URL = '/birthdays';
 
 const BirthdayTable = () => {
   const [birthdays, setBirthdays] = useState([]);
-  const [toggleRefresh, setToggleRefresh] = useState(true);
 
   useEffect(() => {
     const getBirthdays = async () => {
@@ -20,7 +19,7 @@ const BirthdayTable = () => {
     };
 
     getBirthdays();
-  }, [toggleRefresh]);
+  }, []);
 
   const addBirthday = async () => {
     const updatedBirthdays = await axios.post('/birthdays', {

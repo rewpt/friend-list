@@ -20,7 +20,10 @@ router.post('/birthdays', async (req, res) => {
 })
 router.put('/birthdays/:id', (req, res) => {
   const indexNumber = ~~req.params.id - 1
-  res.send({type: 'put'})
+  birthdays[indexNumber] = {...req.body.newBirthday, active: true, id: indexNumber}
+  res.send(birthdays.filter(birthday => {
+    return birthday.active
+  }))
 })
 router.delete('/birthdays/:id', (req, res) => {
   const indexNumber = ~~req.params.id - 1
