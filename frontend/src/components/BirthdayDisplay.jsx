@@ -24,7 +24,7 @@ const BirthdayDisplay = () => {
     }
   };
 
-  // fetch birthdays on load => sort => set into state
+  // Initial API call. Fetch birthdays on load => sort => set into state
   useEffect(() => {
     const getBirthdays = async () => {
       try {
@@ -44,7 +44,7 @@ const BirthdayDisplay = () => {
     setBirthdays((prev) => sortEntries([...prev]));
   }, [sortBy]);
 
-  //API calls
+  //Rest of API calls
 
   const addBirthday = async () => {
     try {
