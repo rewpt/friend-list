@@ -1,6 +1,6 @@
 import express from 'express'
 import cors from 'cors'
-import routes from './routes/api.js'
+import router from './routes/api.js'
 
 const app = express();
 
@@ -10,7 +10,7 @@ import errorHandlerMiddleware from './middleware/error-handler.js';
 
 app.use(cors())
 app.use(express.json())
-app.use('/api', routes);
+app.use('/api', router);
 
 //Take in all http methods & routes left over after checking routes
 app.use(notFoundMiddleware)
