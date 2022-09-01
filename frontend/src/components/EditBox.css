@@ -1,0 +1,41 @@
+.edit-container {
+  position: relative;
+}
+
+.inner-container {
+}
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.name-input {
+  margin-bottom: 24px;
+}
+
+.change-entry {
+  margin: 8px 0;
+}
+
+.accept-change {
+  background: green;
+}
+
+.clear-edits {
+  background: red;
+  margin-left: 6px;
+}
+
+.edit-buttons-container {
+  margin-top: 6px;
+  display: flex;
+}
+
+.close-edit {
+  position: absolute;
+  font-style: bold;
+  cursor: pointer;
+  top: 22px;
+  right: 0;
+}
