@@ -6,6 +6,7 @@ const URL = '/birthdays';
 
 const BirthdayTable = () => {
   const [birthdays, setBirthdays] = useState([]);
+  const [toggleRefresh, setToggleRefresh] = useState(true);
 
   useEffect(() => {
     const getBirthdays = async () => {
@@ -19,12 +20,26 @@ const BirthdayTable = () => {
     };
 
     getBirthdays();
-  }, []);
+  }, [toggleRefresh]);
+
+  const addBirthday = async () => {
+    const updatedBirthdays = await axios.post('/birthdays', {
+      newBirthday: { name: 'Mike', date: '1980-02-01' },
+    });
+    setBirthdays([...updatedBirthdays.data]);
+  };
+
+  const removeBirthday = async (birthdayId) => {
+    const updatedBirthdays = await axios.delete(`/birthdays/${birthdayId}`);
+    setBirthdays([...updatedBirthdays.data]);
+  };
 
   return (
     <div>
       <h1>Friend's Birthdays</h1>
-      <button className="add-birthday">+</button>
+      <button onClick={addBirthday} className="add-birthday">
+        +
+      </button>
       <table>
         <tbody>
           {birthdays.map((appointment) => {
@@ -33,7 +48,14 @@ const BirthdayTable = () => {
                 <td>{appointment.name}</td>
                 <td>{new Date(appointment.date).toLocaleDateString()}</td>
                 <td>
-                  <button className="remove-birthday">-</button>
+                  <button
+                    onClick={() => {
+                      removeBirthday(appointment.id);
+                    }}
+                    className="remove-birthday"
+                  >
+                    -
+                  </button>
                 </td>
               </tr>
             );
