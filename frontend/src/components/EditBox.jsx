@@ -29,7 +29,11 @@ const EditModal = (props) => {
           className="name-input"
         ></input>
         <label>Birthday (yyyy/mm/dd): </label>
-        <input onChange={bdayOnChange} value={editBirthdayEntry}></input>
+        <input
+          onChange={bdayOnChange}
+          value={editBirthdayEntry}
+          maxLength="10"
+        ></input>
         <div className="edit-buttons-container">
           <button
             className="accept-change"

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useLayoutEffect } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import './BirthdayDisplay.css';
 import BirthdayTable from './BirthdayTable';
 import EditBox from './EditBox';
@@ -16,13 +16,37 @@ const BirthdayDisplay = () => {
   const [sortBy, setSortBy] = useState('name');
 
   //generic sort by name otherwise sort by date for array of objects
-  const sortEntries = (data) => {
-    if (sortBy === 'name') {
-      return data.sort((a, b) => a.name.localeCompare(b.name));
-    } else {
-      return data.sort((a, b) => new Date(a.date) - new Date(b.date));
-    }
-  };
+  //useCallback memoizes the function to not recreate it on every load and the only time
+  //the function needs to recreate is if sortByChanges
+  const sortEntries = useCallback(
+    (data) => {
+      if (sortBy === 'name') {
+        return data.sort((a, b) => a.name.localeCompare(b.name));
+      } else {
+        return data.sort((a, b) => new Date(a.date) - new Date(b.date));
+      }
+    },
+    [sortBy]
+  );
+
+  //Pure Functions
+
+  const closeEditBox = useCallback(() => {
+    setEditOpen(false);
+  }, []);
+
+  const clearEditFields = useCallback(() => {
+    setEditNameEntry('');
+    setEditBirthdayEntry('');
+  }, []);
+
+  const editNameOnChange = useCallback((e) => {
+    setEditNameEntry(e.target.value);
+  }, []);
+
+  const editBirthdayOnChange = useCallback((e) => {
+    setEditBirthdayEntry(e.target.value);
+  }, []);
 
   // Initial API call. Fetch birthdays on load => sort => set into state
   useEffect(() => {
@@ -37,16 +61,16 @@ const BirthdayDisplay = () => {
     };
 
     getBirthdays();
-  }, []);
+  }, [sortEntries]);
 
   // another use Effect to avoid recalling api when select is changed
   useEffect(() => {
     setBirthdays((prev) => sortEntries([...prev]));
-  }, [sortBy]);
+  }, [sortBy, sortEntries]);
 
   //Rest of API calls
 
-  const addBirthday = async () => {
+  const addBirthday = useCallback(async () => {
     try {
       const updatedBirthdays = await axios.post('/birthdays', {
         newBirthday: { name: newNameEntry, date: newBirthdayEntry },
@@ -58,51 +82,39 @@ const BirthdayDisplay = () => {
     } catch (err) {
       console.log('addBirthday error: ', err);
     }
-  };
+  }, [newNameEntry, newBirthdayEntry, sortEntries]);
 
-  const removeBirthday = async (birthdayId) => {
-    try {
-      const updatedBirthdays = await axios.delete(`/birthdays/${birthdayId}`);
-      const sortedBirthdays = await sortEntries(updatedBirthdays.data);
-      setBirthdays([...sortedBirthdays]);
-    } catch (err) {
-      console.log('removeBirthdays error:', err);
-    }
-  };
+  const removeBirthday = useCallback(
+    async (birthdayId) => {
+      try {
+        const updatedBirthdays = await axios.delete(`/birthdays/${birthdayId}`);
+        const sortedBirthdays = await sortEntries(updatedBirthdays.data);
+        setBirthdays([...sortedBirthdays]);
+      } catch (err) {
+        console.log('removeBirthdays error:', err);
+      }
+    },
+    [sortEntries]
+  );
 
-  const editEntryOnClick = async (birthdayId) => {
-    try {
-      const updatedBirthdays = await axios.put(`/birthdays/${birthdayId}`, {
-        name: editNameEntry,
-        date: editBirthdayEntry,
-      });
-      const sortedBirthdays = await sortEntries(updatedBirthdays.data);
-      setBirthdays([...sortedBirthdays]);
-      closeEditBox();
-    } catch (err) {
-      console.log('editEntry Error: ', err);
-    }
-  };
+  const editEntryOnClick = useCallback(
+    async (birthdayId) => {
+      try {
+        const updatedBirthdays = await axios.put(`/birthdays/${birthdayId}`, {
+          name: editNameEntry,
+          date: editBirthdayEntry,
+        });
+        const sortedBirthdays = await sortEntries(updatedBirthdays.data);
+        setBirthdays([...sortedBirthdays]);
+        closeEditBox();
+      } catch (err) {
+        console.log('editEntry Error: ', err);
+      }
+    },
+    [sortEntries, closeEditBox, editBirthdayEntry, editNameEntry]
+  );
 
-  //Pure Functions
-
-  const closeEditBox = () => {
-    setEditOpen(false);
-  };
-
-  const clearEditFields = () => {
-    setEditNameEntry('');
-    setEditBirthdayEntry('');
-  };
-
-  const editNameOnChange = (e) => {
-    setEditNameEntry(e.target.value);
-  };
-  const editBirthdayOnChange = (e) => {
-    setEditBirthdayEntry(e.target.value);
-  };
-
-  const openEditOnClick = (birthday) => {
+  const openEditOnClick = useCallback((birthday) => {
     setEditId(birthday.id);
     setCurrentlyEditing(birthday.name);
     setEditOpen(true);
@@ -110,7 +122,7 @@ const BirthdayDisplay = () => {
     setEditBirthdayEntry(
       birthday.date.toString().replace(/-/g, '/').substring(0, 10)
     );
-  };
+  }, []);
 
   return (
     <div className="main-container">
