@@ -4,8 +4,6 @@ const BirthdayTable = (props) => {
   const { birthdays, openEditOnClick, removeBirthday, editOpen, closeEditBox } =
     props;
 
-  console.log('BirthdayTable Rerender');
-
   return (
     <table>
       <tbody>
