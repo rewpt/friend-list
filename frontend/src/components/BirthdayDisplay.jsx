@@ -31,22 +31,22 @@ const BirthdayDisplay = () => {
 
   //Pure Functions
 
-  const closeEditBox = useCallback(() => {
+  const closeEditBox = () => {
     setEditOpen(false);
-  }, []);
+  };
 
-  const clearEditFields = useCallback(() => {
+  const clearEditFields = () => {
     setEditNameEntry('');
     setEditBirthdayEntry('');
-  }, []);
+  };
 
-  const editNameOnChange = useCallback((e) => {
+  const editNameOnChange = (e) => {
     setEditNameEntry(e.target.value);
-  }, []);
+  };
 
-  const editBirthdayOnChange = useCallback((e) => {
+  const editBirthdayOnChange = (e) => {
     setEditBirthdayEntry(e.target.value);
-  }, []);
+  };
 
   // Initial API call. Fetch birthdays on load => sort => set into state
   useEffect(() => {
