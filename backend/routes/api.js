@@ -21,7 +21,6 @@ router.post('/birthdays', async (req, res) => {
 router.put('/birthdays/:id', (req, res) => {
   const indexNumber = ~~req.params.id - 1
   const nameCapitalized = capitalizeFirstLetter(req.body.name)
-  console.log(nameCapitalized)
   const formattedDate = new Date(req.body.date);
   birthdays[indexNumber] = { id: indexNumber +1, name: nameCapitalized, date: formattedDate, active: true,}
   res.send(getActiveBirthdays(birthdays));

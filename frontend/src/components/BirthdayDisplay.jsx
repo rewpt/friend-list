@@ -16,6 +16,8 @@ const BirthdayDisplay = () => {
   const [editId, setEditId] = useState(0);
   const [sortByCategory, setSortByCategory] = useState('name');
   const [sortDirection, setSortDirection] = useState('desc');
+  const [submitDisabled, setSubmitDisabled] = useState(true);
+  const [editSubmitDisabled, setEditSubmitDisabled] = useState(true);
 
   //generic sort by name otherwise sort by date for array of objects
   //useCallback memoizes the function to not recreate it on every load and the only time
@@ -28,6 +30,14 @@ const BirthdayDisplay = () => {
   );
 
   //Functions
+
+  const checkValidEntry = (name, birthday, stateFn) => {
+    if (name && birthday.length > 9) {
+      stateFn(false);
+    } else {
+      stateFn(true);
+    }
+  };
 
   const closeEditBox = () => {
     setEditOpen(false);
@@ -65,6 +75,14 @@ const BirthdayDisplay = () => {
   useEffect(() => {
     setBirthdays((prev) => sortEntries([...prev]));
   }, [sortByCategory, sortEntries]);
+
+  useEffect(() => {
+    checkValidEntry(newNameEntry, newBirthdayEntry, setSubmitDisabled);
+  }, [newNameEntry, newBirthdayEntry]);
+
+  useEffect(() => {
+    checkValidEntry(editNameEntry, editBirthdayEntry, setEditSubmitDisabled);
+  }, [editNameEntry, editBirthdayEntry]);
 
   //Rest of API calls
 
@@ -140,7 +158,11 @@ const BirthdayDisplay = () => {
           maxLength="10"
           onChange={(e) => setNewBirthdayEntry(e.target.value)}
         ></input>
-        <button onClick={addBirthday} className="add-birthday">
+        <button
+          onClick={addBirthday}
+          className={submitDisabled ? 'inactive-add' : 'add-birthday'}
+          disabled={submitDisabled}
+        >
           +
         </button>
       </form>
@@ -184,6 +206,7 @@ const BirthdayDisplay = () => {
             clearEditFields={clearEditFields}
             editEntryOnClick={editEntryOnClick}
             editId={editId}
+            editSubmitDisabled={editSubmitDisabled}
           />
         )}
       </div>

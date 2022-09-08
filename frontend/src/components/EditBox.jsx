@@ -12,6 +12,7 @@ const EditModal = (props) => {
     clearEditFields,
     editEntryOnClick,
     editId,
+    editSubmitDisabled,
   } = props;
 
   return (
@@ -36,7 +37,8 @@ const EditModal = (props) => {
         ></input>
         <div className="edit-buttons-container">
           <button
-            className="accept-change"
+            disabled={editSubmitDisabled}
+            className={editSubmitDisabled ? 'inactive-edit' : 'accept-change'}
             onClick={() => editEntryOnClick(editId)}
           >
             ✔︎

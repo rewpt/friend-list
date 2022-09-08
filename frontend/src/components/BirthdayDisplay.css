@@ -18,10 +18,16 @@ h1 {
   text-align: center;
 }
 
+.inactive-add {
+  background: #FFFFF;
+  margin: 1rem 0;
+  margin-left: 8px;
+}
+
 .add-birthday {
   background: green;
-
   margin: 1rem 0;
+  margin-left: 8px;
 }
 
 .edit-birthday {
@@ -32,10 +38,6 @@ h1 {
 .remove-birthday {
   background: pink;
   font: bold;
-}
-
-.add-birthday {
-  margin-left: 8px;
 }
 
 .birthday-text {
