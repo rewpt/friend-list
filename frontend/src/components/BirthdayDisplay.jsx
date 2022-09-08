@@ -17,7 +17,7 @@ const BirthdayDisplay = () => {
 
   //generic sort by name otherwise sort by date for array of objects
   //useCallback memoizes the function to not recreate it on every load and the only time
-  //the function needs to recreate is if sortByChanges
+  //the function needs to recreate is if sortBy cshanges
   const sortEntries = useCallback(
     (data) => {
       if (sortBy === 'name') {
@@ -29,7 +29,7 @@ const BirthdayDisplay = () => {
     [sortBy]
   );
 
-  //Pure Functions
+  //Functions
 
   const closeEditBox = () => {
     setEditOpen(false);
