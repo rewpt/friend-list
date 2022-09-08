@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import { orderBy } from 'lodash';
 import './BirthdayDisplay.css';
 import BirthdayTable from './BirthdayTable';
 import EditBox from './EditBox';
@@ -13,20 +14,17 @@ const BirthdayDisplay = () => {
   const [editNameEntry, setEditNameEntry] = useState('');
   const [editBirthdayEntry, setEditBirthdayEntry] = useState('');
   const [editId, setEditId] = useState(0);
-  const [sortBy, setSortBy] = useState('name');
+  const [sortByCategory, setSortByCategory] = useState('name');
+  const [sortDirection, setSortDirection] = useState('desc');
 
   //generic sort by name otherwise sort by date for array of objects
   //useCallback memoizes the function to not recreate it on every load and the only time
-  //the function needs to recreate is if sortBy cshanges
+  //the function needs to recreate is if sortByCategory cshanges
   const sortEntries = useCallback(
     (data) => {
-      if (sortBy === 'name') {
-        return data.sort((a, b) => a.name.localeCompare(b.name));
-      } else {
-        return data.sort((a, b) => new Date(a.date) - new Date(b.date));
-      }
+      return orderBy(data, sortByCategory, sortDirection);
     },
-    [sortBy]
+    [sortByCategory, sortDirection]
   );
 
   //Functions
@@ -66,14 +64,15 @@ const BirthdayDisplay = () => {
   // another use Effect to avoid recalling api when select is changed
   useEffect(() => {
     setBirthdays((prev) => sortEntries([...prev]));
-  }, [sortBy, sortEntries]);
+  }, [sortByCategory, sortEntries]);
 
   //Rest of API calls
 
   const addBirthday = useCallback(async () => {
     try {
       const updatedBirthdays = await axios.post('/birthdays', {
-        newBirthday: { name: newNameEntry, date: newBirthdayEntry },
+        name: newNameEntry,
+        date: newBirthdayEntry,
       });
       const sortedBirthdays = await sortEntries(updatedBirthdays.data);
       setBirthdays([...sortedBirthdays]);
@@ -148,13 +147,22 @@ const BirthdayDisplay = () => {
       <div className="sort-by-container">
         <span>sort by: </span>
         <select
-          value={sortBy}
+          value={sortByCategory}
           onChange={(e) => {
-            setSortBy(e.target.value);
+            setSortByCategory(e.target.value);
           }}
         >
           <option value="name">name</option>
           <option value="date">date</option>
+        </select>
+        <select
+          value={sortDirection}
+          onChange={(e) => {
+            setSortDirection(e.target.value);
+          }}
+        >
+          <option value="desc">descending</option>
+          <option value="asc">ascending</option>
         </select>
       </div>
       <div className={editOpen ? 'table-edit-container' : 'table-container'}>
