@@ -4,3 +4,7 @@ export const getActiveBirthdays = (birthdayList) => {
     return birthday.active
   });
 }
+
+export const capitalizeFirstLetter = (string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1)
+}
